@@ -12,7 +12,20 @@
   ),
   highlight-fill: (color) => color,   // Don't modify the fill color - use it as-is
   highlight-stroke: (color) => 0pt,   // No border on highlights
-  highlight-inset: 0pt,               // No inset padding
+  highlight-inset: (
+    rest: 0pt,
+    left: 0pt,
+    right: 0pt,
+    top: 0em,
+    bottom: 0em,
+  ),
+  highlight-outset: (
+    rest: 0pt,
+    left: 0pt,
+    right: 0pt,
+    top: 0.08em,
+    bottom: 0.08em,
+  ),
   highlights: (
     // Line 2: Intense highlight for "Python 2.7 and 3.7" - saturated red
     (line: 2, start: 71, end: 89, fill: red.transparentize(50%)),
@@ -40,8 +53,20 @@ As an example scenario, you could have different dev environments for different 
   highlight-fill: (color) => color,
   highlight-stroke: (color) => 0pt,
   highlight-radius: 0pt,              // No rounded corners on highlights
-  highlight-inset: 0pt,
-  highlight-outset: 0pt,
+  highlight-inset: (
+    rest: 0pt,
+    left: 0pt,
+    right: 0pt,
+    top: 0em,
+    bottom: 0em,
+  ),
+  highlight-outset: (
+    rest: 0pt,
+    left: 0pt,
+    right: 0pt,
+    top: 0.08em,
+    bottom: 0.08em,
+  ),
   highlights: (
     // Red highlights for removed code fragments (line 2)
     (line: 2, start: 27, end: 32, fill: red.transparentize(40%)),    // "Tensor"
@@ -69,15 +94,27 @@ def encode_batch(x: Float[Array, "b d_model"]) -> Float[Array, "b d_sae"]:
 ```
 
 // Example: Splitting a word in half with precise highlights
-#codly(
+#let a = [#codly(
   inset: 0pt,
   radius: 0pt,
   highlighted-lines: (),
   highlight-fill: (color) => color,
   highlight-stroke: (color) => 0pt,
   highlight-radius: 0pt,
-  highlight-inset: 0pt,
-  highlight-outset: 0pt,
+  highlight-inset: (
+    rest: 0pt,
+    left: 0pt,
+    right: 0pt,
+    top: 0em,
+    bottom: 0em,
+  ),
+  highlight-outset: (
+    rest: 0pt,
+    left: 0pt,
+    right: 0pt,
+    top: 0.08em,
+    bottom: 0.08em,
+  ),
   highlights: (
     // Split "calculate_total_amount" - highlight "calculate" part
     (line: 1, start: 4, end: 13, fill: blue.transparentize(40%)),     // "calculate"
@@ -91,4 +128,17 @@ def encode_batch(x: Float[Array, "b d_model"]) -> Float[Array, "b d_sae"]:
 ```python
 def calculate_total_amount(items):
     return sum(item.price for item in items)
-```
+```]
+
+
+#a
+
+#repr(a)
+
+
+#let b = [abc#highlight(fill:red)[123]xyz]
+
+#b
+
+#repr(b)
+
