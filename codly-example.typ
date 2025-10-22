@@ -98,30 +98,20 @@ def encode_batch(x: Float[Array, "b d_model"]) -> Float[Array, "b d_sae"]:
   inset: 0pt,
   radius: 0pt,
   highlighted-lines: (),
-  highlight-fill: (color) => color,
   highlight-stroke: (color) => 0pt,
   highlight-radius: 0pt,
   highlight-inset: (
     rest: 0pt,
     left: 0pt,
     right: 0pt,
-    top: 0em,
-    bottom: 0em,
   ),
   highlight-outset: (
     rest: 0pt,
     left: 0pt,
     right: 0pt,
-    top: 0.08em,
-    bottom: 0.08em,
   ),
   highlights: (
-    // Split "calculate_total_amount" - highlight "calculate" part
-    (line: 1, start: 4, end: 13, fill: blue.transparentize(40%)),     // "calculate"
-    // Split "calculate_total_amount" - highlight "total" part
-    (line: 1, start: 14, end: 19, fill: yellow.transparentize(40%)),  // "total"
-    // Split "calculate_total_amount" - highlight "amount" part
-    (line: 1, start: 20, end: 26, fill: purple.transparentize(40%)), // "amount"
+    (line: 1, start: 6, end: 11, fill: blue.transparentize(40%)),
   )
 )
 
@@ -129,6 +119,8 @@ def encode_batch(x: Float[Array, "b d_model"]) -> Float[Array, "b d_sae"]:
 def calculate_total_amount(items):
     return sum(item.price for item in items)
 ```]
+
+
 
 
 #a
