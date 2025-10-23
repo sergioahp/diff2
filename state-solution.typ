@@ -1,3 +1,5 @@
+// for some reason width auto or too small breaks the background color of code
+#set page(height:auto, margin:4em, width: 40em)
 #let diff(before, after) = {
   let before-state = state("before-lines", ())
   let after-state = state("after-lines", ())
@@ -27,35 +29,60 @@
 
     // Add before lines (removed lines)
     for (idx, line) in before-lines.enumerate() {
+    let bg-color = red.transparentize(80%)
       rows.push((
         box(
-          fill: red.lighten(80%),
-          inset: (x: 0.2em, y: 0.1em),
-          radius: 0.2em,
-          text(font: "DejaVu Sans Mono", size: 10pt, [- #(idx + 1)])
+          // fill: bg-color,
+          inset: (
+            left: 0.2em,
+            right: 0.8em,
+            top: 0.20em,
+            bottom: 0.20em
+          ),
+          text(font: "DejaVu Sans Mono", [#(idx + 1)])
         ),
-        line.body,
-      ))
+        box(
+          fill: bg-color,
+          inset: (
+            left: 0.1em,
+            right: 0.1em,
+            top: 0.25em,
+            bottom: 0.25em
+          ),
+          text(font: "DejaVu Sans Mono", line.body)
+      )))
     }
 
     // Add after lines (added lines)
     for (idx, line) in after-lines.enumerate() {
+      let bg-color = green.transparentize(80%)
       rows.push((
         box(
-          fill: green.lighten(80%),
-          inset: (x: 0.2em, y: 0.1em),
-          radius: 0.2em,
-          text(font: "DejaVu Sans Mono", size: 10pt, [+ #(idx + 1)])
+          // fill: bg-color,
+          inset: (
+            left: 0.2em,
+            right: 0.8em,
+            top: 0.20em,
+            bottom: 0.20em
+          ),
+          text(font: "DejaVu Sans Mono", [#(idx + 1)])
         ),
-        line.body,
-      ))
+        box(
+          fill: bg-color,
+          inset: (
+            left: 0.1em,
+            right: 0.1em,
+            top: 0.25em,
+            bottom: 0.25em
+          ),
+          text(font: "DejaVu Sans Mono", line.body)
+      )))
     }
 
     // Return the grid
     grid(
       columns: (auto, 1fr),
-      column-gutter: 0.6em,
-      row-gutter: 0.15em,
+      row-gutter: 0.0em,
       ..rows.flatten(),
     )
   }
