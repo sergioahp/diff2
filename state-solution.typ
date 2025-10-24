@@ -52,7 +52,6 @@
     let highlight-text = full-text.slice(span.start, span.end)
     parts.push(box(
       fill: span.fill,
-      radius: 0.2em,
       inset: (x: 0.1em, y: 0.0em),
       outset: (x: 0.0em, y: 0.15em),
       style-func([#highlight-text], styles)
@@ -136,6 +135,10 @@
 #let diff(before, after, before-inline: (), after-inline: ()) = {
   let before-state = state("before-lines", ())
   let after-state = state("after-lines", ())
+
+  // Reset states to avoid leakage between multiple diff() calls
+  before-state.update(_ => ())
+  after-state.update(_ => ())
 
   // Collect before lines
   [
@@ -251,10 +254,10 @@
   def better_function():
   ```,
   before-inline: (
-    (line: 1, start: 4, end: 17, fill: red.darken(20%)),  // "cool_function"
+    (line: 1, start: 4, end: 17, fill: red.transparentize(20%)),  // "cool_function"
   ),
   after-inline: (
-    (line: 1, start: 4, end: 18, fill: green.darken(30%)), // "better_function"
+    (line: 1, start: 4, end: 18, fill: green.transparentize(30%)), // "better_function"
   )
 )
 
@@ -272,10 +275,10 @@
   """
   ```,
   before-inline: (
-    (line: 2, start: 20, end: 24, fill: red.darken(20%)),  // "test"
+    (line: 2, start: 20, end: 24, fill: red.transparentize(20%)),  // "test"
   ),
   after-inline: (
-    (line: 2, start: 20, end: 24, fill: green.darken(30%)), // "demo"
+    (line: 2, start: 20, end: 24, fill: green.transparentize(30%)), // "demo"
   )
 )
 
@@ -289,11 +292,11 @@
   output = compute_sum(x, y)
   ```,
   before-inline: (
-    (line: 1, start: 0, end: 6, fill: red.darken(20%)),    // "result"
-    (line: 1, start: 9, end: 24, fill: red.darken(20%)),   // "calculate_total"
+    (line: 1, start: 0, end: 6, fill: red.transparentize(20%)),    // "result"
+    (line: 1, start: 9, end: 24, fill: red.transparentize(20%)),   // "calculate_total"
   ),
   after-inline: (
-    (line: 1, start: 0, end: 6, fill: green.darken(30%)),  // "output"
-    (line: 1, start: 9, end: 20, fill: green.darken(30%)), // "compute_sum"
+    (line: 1, start: 0, end: 6, fill: green.transparentize(30%)),  // "output"
+    (line: 1, start: 9, end: 20, fill: green.transparentize(30%)), // "compute_sum"
   )
 )
