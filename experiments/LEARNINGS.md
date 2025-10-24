@@ -110,3 +110,67 @@ When `line.body` is a single styled element (like a long string), we can:
 - This works for both single-color tokens and multi-color tokens
 - For multiline strings, Python's highlighter preserves context even when we skip the opening `"""`
 - Character positions use `.clusters()` for Unicode safety
+
+---
+
+# Eliminating Spacing from Show Rule Blocks
+
+## The Problem
+
+When using show rules to collect `raw.line` elements, wrapping them in content blocks `[...]` creates unwanted spacing in the document:
+
+```typst
+[
+  #show raw.line: it => {
+    state.update(s => s + (it,))
+  }
+  #code-block
+]
+```
+
+This causes visible whitespace and displacement of surrounding content, even though the show rule is meant to just collect data without rendering.
+
+## Why It Happens
+
+- Content blocks `[...]` are rendered as part of document layout
+- Even when show rules consume the `raw.line` elements, the outer block and brackets take up space
+- Using `hide[]` makes content invisible but **still reserves layout space**
+
+## The Solution
+
+Wrap the collection block with `place(hide[...])`:
+
+```typst
+place(hide[
+  #show raw.line: it => {
+    state.update(s => s + (it,))
+  }
+  #code-block
+])
+```
+
+### How It Works
+
+1. **`hide[]`**: Makes content invisible (opacity = 0)
+2. **`place()`**: Removes content from normal document flow
+3. **Combined**: No visual output AND no spacing impact
+
+## Experiments Tried
+
+See `spacing-solution.typ` for comprehensive tests:
+
+| Approach | Visible? | Takes Space? | Collects Lines? |
+|----------|----------|--------------|-----------------|
+| `[...]` show rule | Yes (brackets) | Yes ❌ | Yes |
+| `hide[...]` | No | Yes ❌ | Yes |
+| `place(hide[...])` | No | **No ✅** | **Yes ✅** |
+| `metadata(...)` | No | No ✅ | No ❌ |
+| Show rule returns `none` | Shows code | Yes ❌ | No ❌ |
+| Show rule returns `[]` | Shows code | Yes ❌ | No ❌ |
+
+**Winner**: `place(hide[...])` - eliminates all spacing while preserving show rule functionality.
+
+## Key Files
+
+- `spacing-solution.typ`: Comprehensive tests showing all approaches and the winning solution
+- `../state-solution.typ`: Main implementation using `place(hide[...])` (lines 151-164)
