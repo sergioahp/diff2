@@ -147,21 +147,21 @@
   before-state.update(_ => ())
   after-state.update(_ => ())
 
-  // Collect before lines
-  [
+  // Collect before lines (using place(hide[]) to avoid any spacing)
+  place(hide[
     #show raw.line: it => {
       before-state.update(s => s + (it,))
     }
     #before
-  ]
+  ])
 
-  // Collect after lines
-  [
+  // Collect after lines (using place(hide[]) to avoid any spacing)
+  place(hide[
     #show raw.line: it => {
       after-state.update(s => s + (it,))
     }
     #after
-  ]
+  ])
 
   // Build grid inside context block
   context {
