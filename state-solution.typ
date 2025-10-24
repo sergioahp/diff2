@@ -132,7 +132,14 @@
   }
 }
 
-#let diff(before, after, before-inline: (), after-inline: ()) = {
+#let diff(
+  before,
+  after,
+  before-inline: (),
+  after-inline: (),
+  before-range: none,  // (start, end) line numbers (1-based, inclusive)
+  after-range: none,   // (start, end) line numbers (1-based, inclusive)
+) = {
   let before-state = state("before-lines", ())
   let after-state = state("after-lines", ())
 
@@ -158,8 +165,27 @@
 
   // Build grid inside context block
   context {
-    let before-lines = before-state.get()
-    let after-lines = after-state.get()
+    let all-before-lines = before-state.get()
+    let all-after-lines = after-state.get()
+
+    // Apply line ranges if specified
+    let before-lines = if before-range != none {
+      let (start, end) = before-range
+      all-before-lines.slice(start - 1, end)
+    } else {
+      all-before-lines
+    }
+
+    let after-lines = if after-range != none {
+      let (start, end) = after-range
+      all-after-lines.slice(start - 1, end)
+    } else {
+      all-after-lines
+    }
+
+    // Calculate starting line numbers for display
+    let before-start-num = if before-range != none { before-range.at(0) } else { 1 }
+    let after-start-num = if after-range != none { after-range.at(0) } else { 1 }
 
     let rows = ()
 
@@ -170,7 +196,7 @@
 
     // Add before lines (removed lines)
     for (idx, line) in before-lines.enumerate() {
-      let line-num = idx + 1
+      let line-num = before-start-num + idx
       let bg-color = red.transparentize(80%)
       let spans = collect-inline(before-inline, line-num)
 
@@ -203,7 +229,7 @@
 
     // Add after lines (added lines)
     for (idx, line) in after-lines.enumerate() {
-      let line-num = idx + 1
+      let line-num = after-start-num + idx
       let bg-color = green.transparentize(80%)
       let spans = collect-inline(after-inline, line-num)
 
@@ -261,25 +287,31 @@
   )
 )
 
-= Test 2: Single-token string with highlight
+= Test 2: Single-token string with highlight (using line ranges)
 
 #diff(
   ```py
   """
   This is a multiline test string
   """
+  result = calculate_value()
   ```,
   ```py
   """
   This is a multiline demo string
   """
+  output = compute_value()
   ```,
   before-inline: (
     (line: 2, start: 20, end: 24, fill: red.transparentize(20%)),  // "test"
+    (line: 4, start: 0, end: 6, fill: red.transparentize(20%)),    // "result"
   ),
   after-inline: (
     (line: 2, start: 20, end: 24, fill: green.transparentize(30%)), // "demo"
-  )
+    (line: 4, start: 0, end: 6, fill: green.transparentize(30%)),  // "output"
+  ),
+  before-range: (2, 4),  // Show lines 2-4 (skip opening """)
+  after-range: (2, 4),   // Show lines 2-4 (skip opening """)
 )
 
 = Test 3: Multiple highlights per line
