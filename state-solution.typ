@@ -147,16 +147,16 @@
   before-state.update(_ => ())
   after-state.update(_ => ())
 
-  // Collect before lines (using place(hide[]) to avoid any spacing)
-  place(hide[
+  // Collect before lines (using place() to avoid any spacing)
+  place([
     #show raw.line: it => {
       before-state.update(s => s + (it,))
     }
     #before
   ])
 
-  // Collect after lines (using place(hide[]) to avoid any spacing)
-  place(hide[
+  // Collect after lines (using place([]) to avoid any spacing)
+  place([
     #show raw.line: it => {
       after-state.update(s => s + (it,))
     }

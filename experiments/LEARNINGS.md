@@ -138,10 +138,10 @@ This causes visible whitespace and displacement of surrounding content, even tho
 
 ## The Solution
 
-Wrap the collection block with `place(hide[...])`:
+Wrap the collection block with `place([...])`:
 
 ```typst
-place(hide[
+place([
   #show raw.line: it => {
     state.update(s => s + (it,))
   }
@@ -151,9 +151,11 @@ place(hide[
 
 ### How It Works
 
-1. **`hide[]`**: Makes content invisible (opacity = 0)
-2. **`place()`**: Removes content from normal document flow
-3. **Combined**: No visual output AND no spacing impact
+1. **Show rule**: Already consumes the `raw.line` elements, so nothing renders
+2. **`place()`**: Removes the content block from normal document flow
+3. **Result**: No visual output AND no spacing impact
+
+**Note**: Initially tried `place(hide[...])` but `hide[]` is unnecessary since the show rule already prevents rendering. `place([...])` alone is sufficient and simpler.
 
 ## Experiments Tried
 
@@ -161,16 +163,19 @@ See `spacing-solution.typ` for comprehensive tests:
 
 | Approach | Visible? | Takes Space? | Collects Lines? |
 |----------|----------|--------------|-----------------|
-| `[...]` show rule | Yes (brackets) | Yes ❌ | Yes |
+| `[...]` show rule | No* | Yes ❌ | Yes |
 | `hide[...]` | No | Yes ❌ | Yes |
 | `place(hide[...])` | No | **No ✅** | **Yes ✅** |
+| `place([...])` | No | **No ✅** | **Yes ✅** |
 | `metadata(...)` | No | No ✅ | No ❌ |
 | Show rule returns `none` | Shows code | Yes ❌ | No ❌ |
 | Show rule returns `[]` | Shows code | Yes ❌ | No ❌ |
 
-**Winner**: `place(hide[...])` - eliminates all spacing while preserving show rule functionality.
+*The show rule consumes raw.line elements so nothing renders, but the block still takes layout space.
+
+**Winner**: `place([...])` - simplest solution that eliminates all spacing while preserving show rule functionality.
 
 ## Key Files
 
-- `spacing-solution.typ`: Comprehensive tests showing all approaches and the winning solution
-- `../state-solution.typ`: Main implementation using `place(hide[...])` (lines 151-164)
+- `spacing-solution.typ`: Comprehensive tests showing all approaches (including `place(hide[...])`)
+- `../state-solution.typ`: Main implementation using `place([...])` (lines 151-164)
